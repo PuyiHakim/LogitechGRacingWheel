@@ -1,39 +1,96 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class movement : MonoBehaviour
+public class Movement : MonoBehaviour
 {
-    public LogitechSimple logitech;
-
-    private void Awake()
+    [SerializeField] private LogitechSimple _logitechSimple;
+    
+    [SerializeField] private int _currentGear = 1;
+    [SerializeField] private int _maxGears = 6;
+    
+    [SerializeField] private Vector3 normalLookPosition;
+    [SerializeField] private Vector3 normalLookRotation;
+    [SerializeField] private Vector3 leftLookPosition;
+    [SerializeField] private Vector3 leftLookRotation;
+    [SerializeField] private Vector3 rightLookPosition;
+    [SerializeField] private Vector3 rightLookRotation;
+    [SerializeField] private Vector3 backLookPosition;
+    [SerializeField] private Vector3 backLookRotation;
+    
+    [SerializeField] private Transform _cameraTransform;
+    
+    private void Start()
     {
-        logitech = GetComponent<LogitechSimple>();
+        _cameraTransform = Camera.main.transform;
     }
-
-    // Update is called once per frame  
-    void Update()
+    
+    private void Update()
     {
-        if (Input.GetKey(KeyCode.A) || logitech.xAxes < 0.1f)
+        if (_logitechSimple == null) return;
+
+        LogitechGSDK.DIJOYSTATE2ENGINES rec;
+        rec = LogitechGSDK.LogiGetStateUnity(0);
+
+        for (int i = 0; i < 128; i++)
         {
-            transform.Rotate(0f, logitech.xAxes * 5, 0f);
+            if (rec.rgbButtons[i] == 128)
+            {
+                if (i == 0)
+                {
+                    _cameraTransform.localPosition = normalLookPosition;
+                    _cameraTransform.localEulerAngles = normalLookRotation;
+                } 
+                if (i == 6)
+                {
+                    _cameraTransform.localPosition = rightLookPosition;
+                    _cameraTransform.localEulerAngles = rightLookRotation;
+                } 
+                if (i == 7)
+                {
+                    _cameraTransform.localPosition = leftLookPosition;
+                    _cameraTransform.localEulerAngles = leftLookRotation;
+                }
+            }
         }
-        else if (Input.GetKey(KeyCode.D) || logitech.xAxes > 0.1f)
+        
+        
+
+
+        var steerInput = _logitechSimple.xAxes;
+        var gasInput = _logitechSimple.GasInput;
+        var breakInput = _logitechSimple.BreakInput;
+
+        if (gasInput > 0)
         {
-            transform.Rotate(0f, logitech.xAxes * 5, 0f);
-        }
-        else
-        {
-            transform.Rotate(0f, 0f, 0f);
+            // Accelerate
+            transform.Translate(0, 0, 0.1f);
+            
+            if (steerInput > 0)
+            {
+                // Turn right
+                transform.Rotate(0, steerInput * 10, 0);
+            }
+            else if (steerInput < 0)
+            {
+                // Turn left
+                transform.Rotate(0, steerInput * 10, 0);
+            }
         }
 
-        if (Input.GetKey(KeyCode.S) || logitech.BreakInput > 0)
+        
+        if (breakInput > 0)
         {
-            transform.Translate(0.0f, 0f, -0.1f);
+            // Brake
+            transform.Translate(0, 0, -0.1f);
         }
-        if (Input.GetKey(KeyCode.W) || logitech.GasInput > 0)
+        
+        
+        if (Input.GetKeyDown(KeyCode.JoystickButton4) && _currentGear < _maxGears)
         {
-            transform.Translate(0.0f, 0f, 0.1f);
+            _currentGear++;
+        }
+        else if (Input.GetKeyDown(KeyCode.JoystickButton5) && _currentGear > 1)
+        {
+            _currentGear--;
         }
     }
 }

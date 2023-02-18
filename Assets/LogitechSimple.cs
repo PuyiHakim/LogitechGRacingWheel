@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LogitechSimple : MonoBehaviour
 {
@@ -9,7 +7,7 @@ public class LogitechSimple : MonoBehaviour
     public float xAxes, GasInput, BreakInput, ClutchInput;
 
     public bool HShift = true;
-    bool isInGear;
+    private bool _isInGear;
     public int CurrentGear;
 
     private void Start()
@@ -70,42 +68,42 @@ public class LogitechSimple : MonoBehaviour
                     if (i == 12)
                     {
                         CurrentGear = 1;
-                        isInGear = true;
+                        _isInGear = true;
                     }
                     else if (i == 13)
                     {
                         CurrentGear = 2;
-                        isInGear = true;
+                        _isInGear = true;
                     }
                     else if (i == 14)
                     {
                         CurrentGear = 3;
-                        isInGear = true;
+                        _isInGear = true;
                     }
                     else if (i == 15)
                     {
                         CurrentGear = 4;
-                        isInGear = true;
+                        _isInGear = true;
                     }
                     else if (i == 16)
                     {
                         CurrentGear = 5;
-                        isInGear = true;
+                        _isInGear = true;
                     }
                     else if (i == 17)
                     {
                         CurrentGear = 6;
-                        isInGear = true;
+                        _isInGear = true;
                     }
                     else if (i == 18)
                     {
                         CurrentGear = -1;
-                        isInGear = true;
+                        _isInGear = true;
                     }
                     else
                     {
                         CurrentGear = 0;
-                        isInGear = false;
+                        _isInGear = false;
                     }
                 }
             }

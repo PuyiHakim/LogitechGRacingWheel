@@ -110,7 +110,7 @@ public class LogitechSteeringWheel : MonoBehaviour
                 {
                     buttonStatus += "Button " + i + " pressed\n";
                 }
-
+                
             }
 
             /* THIS AXIS ARE NEVER REPORTED BY LOGITECH CONTROLLERS 
